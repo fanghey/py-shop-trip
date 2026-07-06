@@ -17,15 +17,15 @@ def shop_trip() -> None:
 
     current_time = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
 
-    for c in customers_data:
+    for customer_data in customers_data:
         customer = Customer(
-            name=c["name"],
-            product_cart=c["product_cart"],
-            location=c["location"],
-            money=c["money"],
+            name=customer_data["name"],
+            product_cart=customer_data["product_cart"],
+            location=customer_data["location"],
+            money=customer_data["money"],
             car=Car(
-                c["car"]["brand"],
-                c["car"]["fuel_consumption"]
+                customer_data["car"]["brand"],
+                customer_data["car"]["fuel_consumption"]
             )
         )
 
@@ -33,8 +33,8 @@ def shop_trip() -> None:
 
         options = []
 
-        for s in shops_data:
-            shop = Shop(**s)
+        for shop_data in shops_data:
+            shop = Shop(**shop_data)
             cost = customer.trip_cost(shop, gas_station.price)
 
             options.append((cost, shop))
@@ -71,8 +71,8 @@ def shop_trip() -> None:
 
         print(f"Total cost is {products_cost:.2f} dollars")
 
-        total_trip_cost = cheapest_cost
-        customer.pay(total_trip_cost)
+        total_cost = cheapest_cost
+        customer.pay(total_cost)
 
         customer.location = [0, 0]
 
