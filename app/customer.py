@@ -30,6 +30,16 @@ class Customer:
         self.money -= cost
         return round(self.money, 2)
 
+    def trip_cost(self, shop, fuel_price):
+    distance = self.distance_to(shop.location)
+
+    fuel_to_shop = self.fuel_cost(distance, fuel_price)
+    fuel_back = self.fuel_cost(distance, fuel_price)
+
+    products = self.products_cost(shop)
+
+    return fuel_to_shop + fuel_back + products
+
     def get_receipts(self, shop: Shop) -> str:
         total_cost = shop.calculate_cart_price(self.product_cart)
         purchase_info = "You have bought:\n"
