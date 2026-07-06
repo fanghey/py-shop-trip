@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+import datetime
 
 from app.car import Car
 from app.customer import Customer
@@ -15,7 +15,7 @@ def shop_trip() -> None:
     customers_data = data["customers"]
     shops_data = data["shops"]
 
-    current_time = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+    current_time = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S")
 
     for customer_data in customers_data:
         customer = Customer(
@@ -29,7 +29,7 @@ def shop_trip() -> None:
             )
         )
 
-        print(f"{customer.name} has {customer.money:.2f} dollars")
+        print(f"{customer.name} has {customer.money} dollars")
 
         options = []
 
@@ -40,16 +40,14 @@ def shop_trip() -> None:
             options.append((cost, shop))
 
             print(
-                f"{customer.name}'s trip to the {shop.name} costs "
-                f"{cost:.2f}"
+                f"{customer.name}'s trip to the {shop.name} costs {cost}"
             )
 
         cheapest_cost, cheapest_shop = min(options, key=lambda x: x[0])
 
         if not customer.enough_money(cheapest_cost):
             print(
-                f"{customer.name} doesn't have enough money "
-                f"to make a purchase in any shop"
+                f"{customer.name} doesn't have enough money to make a purchase in any shop"
             )
             continue
 
@@ -67,9 +65,10 @@ def shop_trip() -> None:
 
         for item, qty in customer.product_cart.items():
             item_cost = cheapest_shop.products[item] * qty
-            print(f"{qty} {item}s for {item_cost:.2f} dollars")
+            print(f"{qty} {item}s for {item_cost} dollars")
 
-        print(f"Total cost is {products_cost:.2f} dollars")
+        print(f"Total cost is {products_cost} dollars")
+        print("See you again!")
 
         total_cost = cheapest_cost
         customer.pay(total_cost)
@@ -77,5 +76,5 @@ def shop_trip() -> None:
         customer.location = [0, 0]
 
         print(f"\n{customer.name} rides home")
-        print(f"{customer.name} now has {customer.money:.2f} dollars")
+        print(f"{customer.name} now has {customer.money} dollars")
         print()
