@@ -15,7 +15,7 @@ def shop_trip() -> None:
     customers_data = data["customers"]
     shops_data = data["shops"]
 
-    current_time = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+    current_time = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
     for customer_data in customers_data:
         customer = Customer(
@@ -35,7 +35,11 @@ def shop_trip() -> None:
 
         for shop_data in shops_data:
             shop = Shop(**shop_data)
-            cost = customer.trip_cost(shop, gas_station.price)
+
+            cost = round(
+                customer.trip_cost(shop, gas_station.price),
+                2
+            )
 
             options.append((cost, shop))
 
@@ -57,8 +61,11 @@ def shop_trip() -> None:
 
         customer.location = cheapest_shop.location
 
-        products_cost = cheapest_shop.calculate_products_cost(
-            customer.product_cart
+        products_cost = round(
+            cheapest_shop.calculate_products_cost(
+                customer.product_cart
+            ),
+            2
         )
 
         print(f"\nDate: {current_time}")
@@ -66,16 +73,16 @@ def shop_trip() -> None:
         print("You have bought:")
 
         for item, qty in customer.product_cart.items():
-            item_cost = cheapest_shop.products[item] * qty
+            item_cost = round(
+                cheapest_shop.products[item] * qty,
+                2
+            )
             print(f"{qty} {item}s for {item_cost} dollars")
 
         print(f"Total cost is {products_cost} dollars")
         print("See you again!")
 
-        total_cost = cheapest_cost
-        customer.pay(total_cost)
-
-        customer.location = [0, 0]
+        customer.pay(round(cheapest_cost, 2))
 
         print(f"\n{customer.name} rides home")
         print(f"{customer.name} now has {customer.money} dollars")
