@@ -40,14 +40,16 @@ def shop_trip() -> None:
             options.append((cost, shop))
 
             print(
-                f"{customer.name}'s trip to the {shop.name} costs {cost}"
+                f"{customer.name}'s trip to the {shop.name} costs "
+                f"{cost}"
             )
 
         cheapest_cost, cheapest_shop = min(options, key=lambda x: x[0])
 
         if not customer.enough_money(cheapest_cost):
             print(
-                f"{customer.name} doesn't have enough money to make a purchase in any shop"
+                f"{customer.name} doesn't have enough money "
+                f"to make a purchase in any shop"
             )
             continue
 
