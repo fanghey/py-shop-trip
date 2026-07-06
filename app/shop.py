@@ -1,19 +1,30 @@
 from datetime import datetime
+from typing import Dict
 
 
 class Shop:
-    def __init__(self, name, location, products):
+    def __init__(
+        self,
+        name: str,
+        location: list,
+        products: Dict[str, float]
+    ) -> None:
         self.name = name
         self.location = location
         self.products = products
 
-    def calculate_products_cost(self, cart: dict):
+    def calculate_products_cost(self, cart: Dict[str, int]) -> float:
         total = 0
         for item, qty in cart.items():
             total += self.products[item] * qty
         return total
 
-    def print_receipt(self, customer_name, cart: dict, total_cost: float):
+    def print_receipt(
+        self,
+        customer_name: str,
+        cart: Dict[str, int],
+        total_cost: float
+    ) -> None:
         current_time = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
 
         print(f"Date: {current_time}")
