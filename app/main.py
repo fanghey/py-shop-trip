@@ -1,49 +1,38 @@
-import json
+from datetime import datetime
 
-from app.gas_station import GasStation
-from app.car import Car
-from app.customer import Customer
-from app.shop import Shop
+current_time = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
 
+for customer_data in customers_date:
+    customer = Customer(...)
 
-def shop_trip() -> None:
-    with open("app/config.json", "r") as file:
-        date = json.load(file)
-        gas_station = GasStation(date["FUEL_PRICE"])
-        customers_date = date["customers"]
-        shops_date = date["shops"]
+    print(f"{customer.name} has {customer.money:.2f} dollars")
 
-    for customer in customers_date:
-        customer = Customer(
-            name=customer["name"],
-            product_cart=customer["product_cart"],
-            location=customer["location"],
-            money=customer["money"],
-            car=Car(
-                customer["car"]["brand"],
-                customer["car"]["fuel_consumption"]
-            )
-        )
-        print(f"{customer.name} has {customer.money} dollars")
+    options = []
 
-        # Calculate the cost of the trip to each shop
-        costs = {}
-        for shop in shops_date:
-            shop = Shop(**shop)
-            cost = customer.costs_for_trip_to_shop(shop, gas_station.price)
-            costs[cost] = shop
-            print(f"{customer}'s trip to the {shop} costs {cost}")
+    for shop_data in shops_date:
+        shop = Shop(**shop_data)
 
-        if not customer.enough_money(min(costs)):
-            break
-        cheapest_shop = costs[min(costs)]
-        print(
-            f"{customer} rides to {cheapest_shop}\n\n"
-            f"Date: 04/01/2021 12:33:41\n"
-            f"Thanks, {customer}, for your purchase!\n"
-            f"{customer.get_receipts(cheapest_shop)}\n\n"
-            f"{customer} rides home\n"
-            f"{customer} now has "
-            f"{customer.calculate_wallet(min(costs))} dollars\n"
-        )
+        cost = customer.costs_for_trip_to_shop(shop, gas_station.price)
+        options.append((cost, shop))
 
+        print(f"{customer}'s trip to the {shop} costs {cost:.2f}")
+
+    cheapest_cost, cheapest_shop = min(options, key=lambda x: x[0])
+
+    if not customer.enough_money(cheapest_cost):
+        print(f"{customer} doesn't have enough money to make a purchase in any shop")
+        continue
+
+    print(f"{customer} rides to {cheapest_shop}")
+
+    customer.location = cheapest_shop.location
+
+    print(f"\nDate: {current_time}")
+    print(f"Thanks, {customer}, for your purchase!")
+
+    print(customer.get_receipts(cheapest_shop))
+
+    customer.location = "home"
+
+    print(f"\n{customer} rides home")
+    print(f"{customer} now has {customer.calculate_wallet(cheapest_cost):.2f} dollars")
