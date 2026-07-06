@@ -8,7 +8,9 @@ from app.gas_station import GasStation
 
 
 def fmt(value: float) -> str:
-    return str(int(value)) if value == int(value) else str(round(value, 2))
+    if value == int(value):
+        return str(int(value))
+    return str(round(value, 2))
 
 
 def shop_trip() -> None:
@@ -41,6 +43,7 @@ def shop_trip() -> None:
             shop = Shop(**shop_data)
 
             cost = customer.trip_cost(shop, gas_station.price)
+            cost = round(cost, 2)
 
             options.append((cost, shop))
 
@@ -53,7 +56,8 @@ def shop_trip() -> None:
 
         if not customer.enough_money(cheapest_cost):
             print(
-                f"{customer.name} doesn't have enough money to make a purchase in any shop"
+                f"{customer.name} doesn't have enough money to make a "
+                f"purchase in any shop"
             )
             continue
 
@@ -64,6 +68,7 @@ def shop_trip() -> None:
         products_cost = cheapest_shop.calculate_products_cost(
             customer.product_cart
         )
+        products_cost = round(products_cost, 2)
 
         print(f"\nDate: {current_time}")
         print(f"Thanks, {customer.name}, for your purchase!")
@@ -71,7 +76,11 @@ def shop_trip() -> None:
 
         for item, qty in customer.product_cart.items():
             item_cost = cheapest_shop.products[item] * qty
-            print(f"{qty} {item}s for {fmt(item_cost)} dollars")
+            item_cost = round(item_cost, 2)
+
+            print(
+                f"{qty} {item}s for {fmt(item_cost)} dollars"
+            )
 
         print(f"Total cost is {fmt(products_cost)} dollars")
         print("See you again!")
