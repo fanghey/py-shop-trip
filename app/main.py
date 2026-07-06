@@ -7,6 +7,10 @@ from app.shop import Shop
 from app.gas_station import GasStation
 
 
+def fmt(value: float) -> str:
+    return str(int(value)) if value == int(value) else str(round(value, 2))
+
+
 def shop_trip() -> None:
     with open("app/config.json", "r") as file:
         data = json.load(file)
@@ -29,31 +33,27 @@ def shop_trip() -> None:
             )
         )
 
-        print(f"{customer.name} has {customer.money} dollars")
+        print(f"{customer.name} has {fmt(customer.money)} dollars")
 
         options = []
 
         for shop_data in shops_data:
             shop = Shop(**shop_data)
 
-            cost = round(
-                customer.trip_cost(shop, gas_station.price),
-                2
-            )
+            cost = customer.trip_cost(shop, gas_station.price)
 
             options.append((cost, shop))
 
             print(
                 f"{customer.name}'s trip to the {shop.name} costs "
-                f"{cost}"
+                f"{fmt(cost)}"
             )
 
         cheapest_cost, cheapest_shop = min(options, key=lambda x: x[0])
 
         if not customer.enough_money(cheapest_cost):
             print(
-                f"{customer.name} doesn't have enough money "
-                f"to make a purchase in any shop"
+                f"{customer.name} doesn't have enough money to make a purchase in any shop"
             )
             continue
 
@@ -61,11 +61,8 @@ def shop_trip() -> None:
 
         customer.location = cheapest_shop.location
 
-        products_cost = round(
-            cheapest_shop.calculate_products_cost(
-                customer.product_cart
-            ),
-            2
+        products_cost = cheapest_shop.calculate_products_cost(
+            customer.product_cart
         )
 
         print(f"\nDate: {current_time}")
@@ -73,17 +70,14 @@ def shop_trip() -> None:
         print("You have bought:")
 
         for item, qty in customer.product_cart.items():
-            item_cost = round(
-                cheapest_shop.products[item] * qty,
-                2
-            )
-            print(f"{qty} {item}s for {item_cost} dollars")
+            item_cost = cheapest_shop.products[item] * qty
+            print(f"{qty} {item}s for {fmt(item_cost)} dollars")
 
-        print(f"Total cost is {products_cost} dollars")
+        print(f"Total cost is {fmt(products_cost)} dollars")
         print("See you again!")
 
-        customer.pay(round(cheapest_cost, 2))
+        customer.pay(cheapest_cost)
 
         print(f"\n{customer.name} rides home")
-        print(f"{customer.name} now has {customer.money} dollars")
+        print(f"{customer.name} now has {fmt(customer.money)} dollars")
         print()
