@@ -47,6 +47,3 @@ def shop_trip() -> None:
             f"{customer.calculate_wallet(min(costs))} dollars\n"
         )
 
-
-if __name__ == "__main__":
-    shop_trip()
