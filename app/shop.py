@@ -1,5 +1,8 @@
 import datetime
-from typing import Dict
+from typing import Dict, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.customer import Customer
 
 
 class Shop:
@@ -13,13 +16,21 @@ class Shop:
         self.location = location
         self.products = products
 
-    def calculate_products_cost(self, cart: Dict[str, int]) -> float:
-        total = 0
+    def calculate_products_cost(
+        self,
+        cart: Dict[str, int]
+    ) -> float:
+        total = 0.0
+
         for item, qty in cart.items():
             total += self.products[item] * qty
+
         return total
 
-    def print_receipt(self, customer) -> None:
+    def print_receipt(
+        self,
+        customer: "Customer"
+    ) -> None:
         current_time = datetime.datetime.now().strftime(
             "%d/%m/%Y %H:%M:%S"
         )
@@ -35,9 +46,10 @@ class Shop:
         print("You have bought:")
 
         for item, qty in customer.product_cart.items():
-            price = self.products[item] * qty
+            item_cost = self.products[item] * qty
+
             print(
-                f"{qty} {item}s for {price:.2f} dollars"
+                f"{qty} {item}s for {item_cost:.2f} dollars"
             )
 
         print(
