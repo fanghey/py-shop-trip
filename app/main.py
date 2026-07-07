@@ -7,7 +7,9 @@ from app.gas_station import GasStation
 
 
 def fmt(value: float) -> str:
-    return f"{value:.2f}"
+    if value == int(value):
+        return str(int(value))
+    return str(round(value, 2))
 
 
 def shop_trip() -> None:
@@ -32,7 +34,9 @@ def shop_trip() -> None:
 
         home_location = customer.location
 
-        print(f"{customer.name} has {fmt(customer.money)} dollars")
+        print(
+            f"{customer.name} has {fmt(customer.money)} dollars"
+        )
 
         options = []
 
@@ -51,7 +55,10 @@ def shop_trip() -> None:
                 f"{fmt(cost)}"
             )
 
-        cheapest_cost, cheapest_shop = min(options, key=lambda x: x[0])
+        cheapest_cost, cheapest_shop = min(
+            options,
+            key=lambda x: x[0]
+        )
 
         if not customer.enough_money(cheapest_cost):
             print(
@@ -71,5 +78,7 @@ def shop_trip() -> None:
         customer.location = home_location
 
         print(f"\n{customer.name} rides home")
-        print(f"{customer.name} now has {fmt(customer.money)} dollars")
+        print(
+            f"{customer.name} now has {fmt(customer.money)} dollars"
+        )
         print()
