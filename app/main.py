@@ -1,5 +1,4 @@
 import json
-import datetime
 
 from app.car import Car
 from app.customer import Customer
@@ -8,9 +7,7 @@ from app.gas_station import GasStation
 
 
 def fmt(value: float) -> str:
-    if value == int(value):
-        return str(int(value))
-    return str(round(value, 2))
+    return f"{value:.2f}"
 
 
 def shop_trip() -> None:
@@ -20,8 +17,6 @@ def shop_trip() -> None:
     gas_station = GasStation(data["FUEL_PRICE"])
     customers_data = data["customers"]
     shops_data = data["shops"]
-
-    current_time = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
     for customer_data in customers_data:
         customer = Customer(
@@ -35,6 +30,8 @@ def shop_trip() -> None:
             )
         )
 
+        home_location = customer.location
+
         print(f"{customer.name} has {fmt(customer.money)} dollars")
 
         options = []
@@ -42,8 +39,10 @@ def shop_trip() -> None:
         for shop_data in shops_data:
             shop = Shop(**shop_data)
 
-            cost = customer.trip_cost(shop, gas_station.price)
-            cost = round(cost, 2)
+            cost = round(
+                customer.trip_cost(shop, gas_station.price),
+                2
+            )
 
             options.append((cost, shop))
 
@@ -65,27 +64,11 @@ def shop_trip() -> None:
 
         customer.location = cheapest_shop.location
 
-        products_cost = cheapest_shop.calculate_products_cost(
-            customer.product_cart
-        )
-        products_cost = round(products_cost, 2)
-
-        print(f"\nDate: {current_time}")
-        print(f"Thanks, {customer.name}, for your purchase!")
-        print("You have bought:")
-
-        for item, qty in customer.product_cart.items():
-            item_cost = cheapest_shop.products[item] * qty
-            item_cost = round(item_cost, 2)
-
-            print(
-                f"{qty} {item}s for {fmt(item_cost)} dollars"
-            )
-
-        print(f"Total cost is {fmt(products_cost)} dollars")
-        print("See you again!")
+        cheapest_shop.print_receipt(customer)
 
         customer.pay(cheapest_cost)
+
+        customer.location = home_location
 
         print(f"\n{customer.name} rides home")
         print(f"{customer.name} now has {fmt(customer.money)} dollars")
