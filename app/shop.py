@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 from typing import Dict
 
 
@@ -19,21 +19,28 @@ class Shop:
             total += self.products[item] * qty
         return total
 
-    def print_receipt(
-        self,
-        customer_name: str,
-        cart: Dict[str, int],
-        total_cost: float
-    ) -> None:
-        current_time = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+    def print_receipt(self, customer) -> None:
+        current_time = datetime.datetime.now().strftime(
+            "%d/%m/%Y %H:%M:%S"
+        )
 
-        print(f"Date: {current_time}")
-        print(f"Thanks, {customer_name}, for your purchase!")
+        total_cost = self.calculate_products_cost(
+            customer.product_cart
+        )
+
+        print(f"\nDate: {current_time}")
+        print(
+            f"Thanks, {customer.name}, for your purchase!"
+        )
         print("You have bought:")
 
-        for item, qty in cart.items():
+        for item, qty in customer.product_cart.items():
             price = self.products[item] * qty
-            print(f"{qty} {item}s for {price:.2f} dollars")
+            print(
+                f"{qty} {item}s for {price:.2f} dollars"
+            )
 
-        print(f"Total cost is {total_cost:.2f} dollars")
+        print(
+            f"Total cost is {total_cost:.2f} dollars"
+        )
         print("See you again!")
