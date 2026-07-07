@@ -5,6 +5,12 @@ if TYPE_CHECKING:
     from app.customer import Customer
 
 
+def fmt(value: float) -> str:
+    if value == int(value):
+        return str(int(value))
+    return str(round(value, 2))
+
+
 class Shop:
     def __init__(
         self,
@@ -49,10 +55,10 @@ class Shop:
             item_cost = self.products[item] * qty
 
             print(
-                f"{qty} {item}s for {item_cost:.2f} dollars"
+                f"{qty} {item}s for {fmt(item_cost)} dollars"
             )
 
         print(
-            f"Total cost is {total_cost:.2f} dollars"
+            f"Total cost is {fmt(total_cost)} dollars"
         )
         print("See you again!")
